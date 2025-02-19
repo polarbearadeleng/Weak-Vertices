@@ -1,0 +1,52 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class weakvertices {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            int n = scanner.nextInt();
+            if (n == -1) break; // End of input
+            
+            int[][] adjacencyMatrix = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    adjacencyMatrix[i][j] = scanner.nextInt();
+                }
+            }
+            
+            List<Integer> weakVertices = findWeakVertices(adjacencyMatrix, n);
+            for (int vertex : weakVertices) {
+                System.out.print(vertex + " ");
+            }
+            System.out.println();
+        }
+        scanner.close();
+    }
+
+    private static List<Integer> findWeakVertices(int[][] matrix, int n) {
+        List<Integer> weakVertices = new ArrayList<>();
+        
+        for (int i = 0; i < n; i++) {
+            boolean isWeak = true; // Assume vertex i is weak until proven otherwise
+            
+            // Check all pairs of neighbors of i
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 1) { // If i is connected to j
+                    for (int k = j + 1; k < n; k++) { // Check the neighbors of i
+                        if (matrix[i][k] == 1 && matrix[j][k] == 1) { // Check if j and k are connected
+                            isWeak = false; // Vertex i is part of a triangle
+                            break;
+                        }
+                    }
+                }
+                if (!isWeak) break; // No need to check further
+            }
+            if (isWeak) {
+                weakVertices.add(i);
+            }
+        }
+        return weakVertices;
+    }
+}
